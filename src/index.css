@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Chivo:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  /* Chassis */
+  --chassis-crimson: #dc2626;
+  --chassis-dark: #991b1b;
+  --chassis-deep: #7f1d1d;
+  --chassis-light: #ef4444;
+
+  /* Screen & Bezel */
+  --screen-bg: #dc2626;
+  --screen-surface: #1e293b;
+  --bezel-gray: #e2e8f0;
+  --bezel-gray-dark: #94a3b8;
+
+  /* Surface */
+  --surface: #0b1326;
+  --surface-dim: #060e20;
+  --surface-bright: #31394d;
+  --surface-container: #171f33;
+  --surface-container-high: #222a3d;
+
+  /* Card */
+  --card-bg: #181d2e;
+  --card-border: rgba(255,255,255,0.06);
+
+  /* Text */
+  --text: #dae2fd;
+  --text-dim: #94a3b8;
+  --text-muted: #64748b;
+
+  /* Accent: Cyan Lens */
+  --lens: #06b6d4;
+  --lens-glow: #67e8f9;
+  --lens-bloom: rgba(6,182,212,0.6);
+  --cyan: #22d3ee;
+  --sky: #38bdf8;
+
+  /* Primary */
+  --primary: #ffb4ab;
+  --primary-container: #dc2626;
+
+  /* Secondary: Keypad Blue */
+  --secondary: #93ccff;
+  --secondary-container: #0284c7;
+  --secondary-dark: #075985;
+
+  /* Tertiary: Status Green */
+  --green: #22c55e;
+  --green-dark: #15803d;
+  --green-lime: #4ae176;
+
+  /* Amber LED */
+  --amber: #f59e0b;
+
+  /* Violet */
+  --violet: #a78bfa;
+  --violet-chip-bg: #1e1b4b;
+
+  /* Error / Alert */
+  --alert: #ffb4ab;
+  --alert-dark: #93000a;
+  --badge-red: #dc2626;
+
+  /* Footer */
+  --footer-bg: #7f1d1d;
+
+  /* Typography */
+  --font-headline: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Chivo', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, Consolas, monospace;
+  --sans: 'Chivo', system-ui, sans-serif;
+}
+
+html, body, #root {
+  margin: 0;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--chassis-deep);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
