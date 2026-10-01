@@ -1,4 +1,4 @@
-import { TYPE_LABELS, getHudForPokemon, type PokemonData } from '../types';
+import { TYPE_LABELS, type PokemonData } from '../types';
 import { useRef } from 'react';
 
 interface LeftShellProps {
@@ -26,8 +26,6 @@ export default function LeftShell({
   onSearch,
   children,
 }: LeftShellProps) {
-  const hud = getHudForPokemon(id);
-
   const dispatchToCanvas = (key: string) => {
     const canvas = document.querySelector('canvas');
     if (canvas) {
@@ -75,7 +73,7 @@ export default function LeftShell({
                         style={{ borderColor: `${info?.color ?? '#888'}60`, background: `${info?.color ?? '#888'}12`, color: info?.color }}
                       >
                         <img
-                          src={`/type-icons/${t.type.name}.svg`}
+                          src={`${import.meta.env.BASE_URL}type-icons/${t.type.name}.svg`}
                           alt={t.type.name}
                           className="type-icon"
                         />
