@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import {
   STAT_HUD,
@@ -15,6 +15,15 @@ interface RightTerminalProps {
   evoStages: EvoStage[];
   onInspectEvo: (name: string) => void;
 }
+
+type MobileTab = 'status' | 'habitat' | 'evo';
+
+/* Icons/labels aligned with desktop card titles in this terminal */
+const TABS: { id: MobileTab; label: string; icon: string }[] = [
+  { id: 'status', label: 'STATUS BASE', icon: 'monitoring' },
+  { id: 'habitat', label: 'OBSERVAÇÃO', icon: 'warning' },
+  { id: 'evo', label: 'CADEIA EVOL.', icon: 'alt_route' },
+];
 
 const BAR_GRADIENTS: Record<string, string> = {
   hp: 'linear-gradient(90deg, #15803d, #4ade80)',
@@ -36,6 +45,7 @@ export default function RightTerminal({
   onInspectEvo,
 }: RightTerminalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState<MobileTab>('status');
 
   useEffect(() => {
     if (!contentRef.current) return;
@@ -54,7 +64,7 @@ export default function RightTerminal({
       });
     }, 30);
     return () => clearTimeout(timer);
-  }, [data]);
+  }, [data, activeTab]);
 
   if (!data) return (
     <div className="right-shell">
@@ -85,6 +95,9 @@ export default function RightTerminal({
     `${Math.round((1 - genderRate / 8) * 100)}% ♂ / ${Math.round((genderRate / 8) * 100)}% ♀`;
   const captureColor = captureRate >= 200 ? 'var(--green)' : captureRate >= 100 ? 'var(--text-muted)' : 'var(--alert)';
 
+  const sectionClass = (id: MobileTab) =>
+    `data-section-block${activeTab === id ? ' active-section' : ''}`;
+
   return (
     <div className="right-shell">
       <div className="terminal">
@@ -94,134 +107,159 @@ export default function RightTerminal({
           <div className="terminal-dot" />
         </div>
 
-        {/* Scrollable Content — all sections */}
+        {/* Mobile tabs (hidden on desktop via CSS) */}
+        <div className="data-tabs" role="tablist" aria-label="Seções do terminal">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              className={`data-tab${activeTab === tab.id ? ' active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <span className="material-symbols-rounded">{tab.icon}</span>
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Scrollable Content — sections tagged for mobile tabs */}
         <div className="tab-content" ref={contentRef}>
 
-          {/* Metrics */}
-          <div className="metrics-grid">
-            <div className="card anim">
-              <span className="metric-label">ALTURA</span>
-              <span className="metric-value">{heightM} m</span>
+          {/* STATUS: metrics + combat stats + abilities (desktop titled cards) */}
+          <div data-section="status" className={sectionClass('status')}>
+            <div className="metrics-grid">
+              <div className="card anim">
+                <span className="metric-label">ALTURA</span>
+                <span className="metric-value">{heightM} m</span>
+              </div>
+              <div className="card anim">
+                <span className="metric-label">PESO</span>
+                <span className="metric-value">{weightKg} kg</span>
+              </div>
+              <div className="card anim">
+                <span className="metric-label">GÊNERO</span>
+                <span className="metric-value" style={{ fontSize: 13 }}>{genderDisplay}</span>
+              </div>
+              <div className="card anim">
+                <span className="metric-label">CAPTURA</span>
+                <span className="metric-value" style={{ color: captureColor }}>{captureRate}</span>
+              </div>
             </div>
-            <div className="card anim">
-              <span className="metric-label">PESO</span>
-              <span className="metric-value">{weightKg} kg</span>
-            </div>
-            <div className="card anim">
-              <span className="metric-label">GÊNERO</span>
-              <span className="metric-value" style={{ fontSize: 13 }}>{genderDisplay}</span>
-            </div>
-            <div className="card anim">
-              <span className="metric-label">CAPTURA</span>
-              <span className="metric-value" style={{ color: captureColor }}>{captureRate}</span>
-            </div>
-          </div>
 
-          {/* Habitat */}
-          <div className="metrics-grid anim" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-            <div className="card">
-              <span className="metric-label">HABITAT</span>
-              <span className="metric-value" style={{ fontSize: 14, textTransform: 'uppercase' }}>{species?.habitat?.name ?? 'DESCONHECIDO'}</span>
-            </div>
-            <div className="card">
-              <span className="metric-label">COR</span>
-              <span className="metric-value" style={{ fontSize: 14, textTransform: 'uppercase', color: typeColor }}>{species?.color?.name ?? '—'}</span>
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="card anim">
-            <div className="card-header">
-              <span className="card-title">
-                <Icon name="monitoring" />
-                STATUS BASE DE COMBATE
-              </span>
-              <span className="card-badge cyan">BST: {bst}</span>
-            </div>
-            {data.stats.map((s) => {
-              const info = STAT_HUD[s.stat.name];
-              const max = STAT_MAX[s.stat.name] ?? 255;
-              const pct = Math.min((s.base_stat / max) * 100, 100);
-              return (
-                <div key={s.stat.name} className="stat-bar-row">
-                  <span className="stat-bar-label" style={{ color: info?.color }}>{info?.label ?? s.stat.name}</span>
-                  <div className="stat-bar-track">
-                        <div className="stat-bar-fill" data-pct={pct} style={{ background: BAR_GRADIENTS[s.stat.name] ?? `linear-gradient(90deg, ${typeColor}, ${typeColor}cc)` }} />
-                  </div>
-                  <span className="stat-bar-value">{s.base_stat}</span>
-                  <span className="stat-bar-max">/ 255</span>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Flavor Text */}
-          {flavorText && (
             <div className="card anim">
               <div className="card-header">
-                <span className="card-title" style={{ color: '#991b1b' }}>
-                  <Icon name="warning" />
-                  OBSERVAÇÃO DE COMBATE
+                <span className="card-title">
+                  <Icon name="monitoring" />
+                  STATUS BASE DE COMBATE
                 </span>
-                <span className="card-badge red">ALERTA</span>
+                <span className="card-badge cyan">BST: {bst}</span>
               </div>
-              <p className="lore-text">{flavorText}</p>
+              {data.stats.map((s) => {
+                const info = STAT_HUD[s.stat.name];
+                const max = STAT_MAX[s.stat.name] ?? 255;
+                const pct = Math.min((s.base_stat / max) * 100, 100);
+                return (
+                  <div key={s.stat.name} className="stat-bar-row">
+                    <span className="stat-bar-label" style={{ color: info?.color }}>{info?.label ?? s.stat.name}</span>
+                    <div className="stat-bar-track">
+                      <div className="stat-bar-fill" data-pct={pct} style={{ background: BAR_GRADIENTS[s.stat.name] ?? `linear-gradient(90deg, ${typeColor}, ${typeColor}cc)` }} />
+                    </div>
+                    <span className="stat-bar-value">{s.base_stat}</span>
+                    <span className="stat-bar-max">/ 255</span>
+                  </div>
+                );
+              })}
             </div>
-          )}
 
-          {/* Abilities */}
-          <div className="abilities-grid anim">
-            {primaryAbility && (
-              <div className="card">
-                <div className="ability-card-header">
-                  <span className="ability-name">{primaryAbility.ability.name.replace('-', ' ')}</span>
-                  <span className="card-badge green">PRIMÁRIA</span>
+            <div className="abilities-grid anim">
+              {primaryAbility && (
+                <div className="card">
+                  <div className="ability-card-header">
+                    <span className="ability-name">{primaryAbility.ability.name.replace('-', ' ')}</span>
+                    <span className="card-badge green">PRIMÁRIA</span>
+                  </div>
+                  <div className="ability-desc">Habilidade principal registrada no sistema.</div>
                 </div>
-                <div className="ability-desc">Habilidade principal registrada no sistema.</div>
+              )}
+              {hiddenAbility && (
+                <div className="card">
+                  <div className="ability-card-header">
+                    <span className="ability-name">{hiddenAbility.ability.name.replace('-', ' ')}</span>
+                    <span className="card-badge red">OCULTA</span>
+                  </div>
+                  <div className="ability-desc">Habilidade secreta — ativa em condições específicas.</div>
+                </div>
+              )}
+              {!primaryAbility && !hiddenAbility && (
+                <div className="card">
+                  <div className="ability-desc">Nenhuma habilidade registrada.</div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* OBSERVAÇÃO: habitat + lore (desktop card title) */}
+          <div data-section="habitat" className={sectionClass('habitat')}>
+            <div className="metrics-grid anim" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+              <div className="card">
+                <span className="metric-label">HABITAT</span>
+                <span className="metric-value" style={{ fontSize: 14, textTransform: 'uppercase' }}>{species?.habitat?.name ?? 'DESCONHECIDO'}</span>
               </div>
-            )}
-            {hiddenAbility && (
               <div className="card">
-                <div className="ability-card-header">
-                  <span className="ability-name">{hiddenAbility.ability.name.replace('-', ' ')}</span>
-                  <span className="card-badge red">OCULTA</span>
+                <span className="metric-label">COR</span>
+                <span className="metric-value" style={{ fontSize: 14, textTransform: 'uppercase', color: typeColor }}>{species?.color?.name ?? '—'}</span>
+              </div>
+            </div>
+
+            {flavorText && (
+              <div className="card anim">
+                <div className="card-header">
+                  <span className="card-title" style={{ color: '#991b1b' }}>
+                    <Icon name="warning" />
+                    OBSERVAÇÃO DE COMBATE
+                  </span>
+                  <span className="card-badge red">ALERTA</span>
                 </div>
-                <div className="ability-desc">Habilidade secreta — ativa em condições específicas.</div>
+                <p className="lore-text">{flavorText}</p>
               </div>
             )}
           </div>
 
-          {/* Evolution */}
-          <div className="card anim">
-            <div className="card-header">
-              <span className="card-title">
-                <Icon name="alt_route" />
-                CADEIA EVOLUTIVA
-              </span>
-              <span className="card-badge green">{evoStages.length} ESTÁGIO{evoStages.length > 1 ? 'S' : ''}</span>
-            </div>
-            <div className="evo-chain">
-              {evoStages.map((stage, i) => (
-                <div key={stage.name} style={{ display: 'flex', alignItems: 'center' }}>
-                  {i > 0 && <span className="evo-arrow">→</span>}
-                  <div
-                    className={`evo-stage ${stage.isCurrent ? 'current' : ''}`}
-                    onClick={() => !stage.isCurrent && onInspectEvo(stage.name)}
-                  >
-                    <img className="evo-sprite" src={stage.sprite} alt={stage.name} />
-                    <span className="evo-name">{stage.name}</span>
-                    <span className="evo-id">#{String(stage.id).padStart(3, '0')}</span>
-                    {stage.requirement && <span className="evo-req">{stage.requirement}</span>}
-                    {stage.isCurrent && <span className="card-badge green" style={{ marginTop: 2 }}>ATUAL</span>}
+          {/* CADEIA EVOLUTIVA (desktop card title) */}
+          <div data-section="evo" className={sectionClass('evo')}>
+            <div className="card anim">
+              <div className="card-header">
+                <span className="card-title">
+                  <Icon name="alt_route" />
+                  CADEIA EVOLUTIVA
+                </span>
+                <span className="card-badge green">{evoStages.length} ESTÁGIO{evoStages.length > 1 ? 'S' : ''}</span>
+              </div>
+              <div className="evo-chain">
+                {evoStages.map((stage, i) => (
+                  <div key={stage.name} style={{ display: 'flex', alignItems: 'center' }}>
+                    {i > 0 && <span className="evo-arrow">→</span>}
+                    <div
+                      className={`evo-stage ${stage.isCurrent ? 'current' : ''}`}
+                      onClick={() => !stage.isCurrent && onInspectEvo(stage.name)}
+                    >
+                      <img className="evo-sprite" src={stage.sprite} alt={stage.name} />
+                      <span className="evo-name">{stage.name}</span>
+                      <span className="evo-id">#{String(stage.id).padStart(3, '0')}</span>
+                      {stage.requirement && <span className="evo-req">{stage.requirement}</span>}
+                      {stage.isCurrent && <span className="card-badge green" style={{ marginTop: 2 }}>ATUAL</span>}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+              {evoStages.length <= 1 && (
+                <p className="lore-text anim" style={{ textAlign: 'center', marginTop: 10 }}>
+                  Forma final — sem evolução subsequente registrada.
+                </p>
+              )}
             </div>
-            {evoStages.length <= 1 && (
-              <p className="lore-text anim" style={{ textAlign: 'center', marginTop: 10 }}>
-                Forma final — sem evolução subsequente registrada.
-              </p>
-            )}
           </div>
         </div>
 

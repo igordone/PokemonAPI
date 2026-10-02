@@ -1284,19 +1284,396 @@
   .metrics-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ═══════════════════════════════════════════════════════
+   MOBILE (≤900px) — single column, Stitch-style
+   ═══════════════════════════════════════════════════════ */
 @media (max-width: 900px) {
-  .device { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
-  .device-body { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+  .device-wrapper {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  .device {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+    grid-template-rows: auto auto;
+  }
+
+  /* Body: stack left above right */
+  .device-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px;
+    height: auto;
+    min-height: 0;
+  }
+
   .hinge { display: none; }
-  .left-shell { padding: 8px; }
-  .gray-shell { border-radius: 20px; padding: 12px; }
-  .control-panel { border-radius: 20px; height: 110px; padding: 10px 16px; }
-  .right-shell { padding: 8px; }
-  .pokemon-name { font-size: 20px; }
-  .analog-btn { width: 44px; height: 44px; }
-  .pill { width: 36px; height: 14px; }
-  .dpad { width: 72px; height: 72px; }
-  .dpad-btn { width: 22px; height: 22px; font-size: 9px; }
-  .dpad-center { width: 16px; height: 16px; }
-  .stage-display { font-size: 10px; padding: 6px 14px; }
+
+  .left-shell,
+  .right-shell {
+    width: 100%;
+    min-height: 0;
+  }
+
+  /* ─── Top bar compact ─── */
+  .top-bar {
+    height: auto;
+    min-height: 52px;
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  .top-bar-left { gap: 10px; min-width: 0; }
+
+  .lens {
+    width: 34px;
+    height: 34px;
+  }
+
+  .led-pill {
+    padding: 5px 8px;
+    gap: 6px;
+  }
+
+  .led {
+    width: 10px;
+    height: 10px;
+  }
+
+  .led-label { font-size: 7px; }
+
+  .top-title-group { min-width: 0; }
+
+  .top-title {
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .top-badge {
+    font-size: 8px;
+    padding: 1px 6px;
+  }
+
+  .top-subtitle,
+  .top-vent {
+    display: none;
+  }
+
+  .top-registration {
+    padding: 4px 8px;
+  }
+
+  .top-registration-text {
+    font-size: 9px;
+    max-width: 72px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ─── Gray shell / screen ─── */
+  .left-shell {
+    padding: 8px;
+    gap: 10px;
+    border-radius: 18px;
+  }
+
+  .gray-shell {
+    border-radius: 16px;
+    border-bottom-left-radius: 0;
+    padding: 10px;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 28px 100%, 0 calc(100% - 28px));
+  }
+
+  .sensor-dots { margin-bottom: 6px; gap: 8px; }
+  .sensor-dot { width: 8px; height: 8px; }
+
+  .screen-recess {
+    border-width: 3px;
+    border-radius: 12px;
+  }
+
+  /* ─── Name row ─── */
+  .name-row {
+    flex-wrap: wrap;
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .name-row-left {
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .pokemon-name {
+    font-size: 18px;
+  }
+
+  .id-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+  }
+
+  .type-chip {
+    font-size: 8px;
+    padding: 2px 7px;
+  }
+
+  .type-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .name-row-right {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+  }
+
+  .icon-btn {
+    padding: 4px 8px;
+    font-size: 8px;
+  }
+
+  .icon-btn .material-symbols-rounded { font-size: 12px; }
+
+  /* ─── Viewer: fixed min height ─── */
+  .viewer-area {
+    min-height: 42vh;
+    flex: 0 0 auto;
+  }
+
+  .viewer-glow {
+    width: 180px;
+    height: 180px;
+  }
+
+  .ring-1 { width: 150px; height: 150px; }
+  .ring-2 { width: 200px; height: 200px; }
+
+  .degree-mark.top    { top: -104px; }
+  .degree-mark.right  { right: -104px; }
+  .degree-mark.bottom { bottom: -104px; }
+  .degree-mark.left   { left: -104px; }
+
+  /* ─── Nav strip ─── */
+  .nav-strip {
+    padding: 6px 8px;
+  }
+
+  .nav-fps { display: none; }
+
+  .nav-arrow {
+    padding: 6px 8px;
+    font-size: 9px;
+    max-width: 42%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ─── Search ─── */
+  .search-bar { padding: 6px 8px; }
+
+  .search-input {
+    font-size: 16px; /* prevent iOS zoom */
+    padding: 8px 10px;
+  }
+
+  .search-btn {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+
+  /* ─── Below screen ─── */
+  .below-screen { padding-top: 6px; }
+  .display-ready { padding-left: 8px; }
+  .display-ready-text { font-size: 7px; }
+  .speaker-line { width: 22px; }
+
+  /* ─── Control panel compact ─── */
+  .control-panel {
+    height: 92px;
+    padding: 8px 12px;
+    border-radius: 14px;
+    gap: 8px;
+  }
+
+  .analog-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .analog-btn::after {
+    width: 12px;
+    height: 12px;
+  }
+
+  .pill {
+    width: 32px;
+    height: 12px;
+  }
+
+  .pill-group { gap: 6px; }
+
+  .dpad {
+    width: 64px;
+    height: 64px;
+  }
+
+  .dpad-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 8px;
+    border-width: 1px;
+  }
+
+  .dpad-center {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dpad-center::after {
+    width: 7px;
+    height: 7px;
+  }
+
+  /* ─── Right shell / terminal ─── */
+  .right-shell {
+    padding: 8px;
+    gap: 8px;
+    border-radius: 18px;
+  }
+
+  .terminal {
+    border-radius: 14px;
+    border-width: 3px;
+  }
+
+  .terminal-header {
+    padding: 8px 10px;
+  }
+
+  .terminal-title {
+    font-size: 9px;
+  }
+
+  /* Tabs (mobile only) — icons/labels match desktop terminal cards */
+  .data-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    padding: 6px;
+    margin: 8px 8px 0;
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+  }
+
+  .data-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 8px 4px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .data-tab .material-symbols-rounded {
+    font-size: 16px;
+  }
+
+  .data-tab.active {
+    background: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.35);
+    color: var(--green);
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.12);
+  }
+
+  /* Section visibility driven by active tab */
+  .tab-content {
+    padding: 10px;
+    gap: 10px;
+    max-height: none;
+  }
+
+  .tab-content [data-section] {
+    display: none;
+  }
+
+  .tab-content [data-section].active-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .card {
+    padding: 10px;
+  }
+
+  .metric-value {
+    font-size: 16px;
+  }
+
+  .lore-text {
+    font-size: 13px;
+  }
+
+  .abilities-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .evo-chain {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 4px;
+  }
+
+  .evo-stage {
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+
+  .terminal-footer,
+  .device-footer {
+    padding: 8px 10px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .footer-text { font-size: 7px; }
+}
+
+/* Desktop: hide tab bar, always show all sections */
+@media (min-width: 901px) {
+  .data-tabs { display: none; }
+
+  .tab-content [data-section] {
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+  }
 }

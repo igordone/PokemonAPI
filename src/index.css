@@ -87,3 +87,19 @@ body {
   color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
+
+/* Mobile: unlock page scroll + safe areas (notch / home bar) */
+@media (max-width: 900px) {
+  html, body, #root {
+    height: auto;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
