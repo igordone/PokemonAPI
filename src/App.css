@@ -5,7 +5,8 @@
 /* ─── WRAPPER ─── */
 .device-wrapper {
   height: 100dvh;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
 }
 
@@ -1285,18 +1286,25 @@
 }
 
 /* ═══════════════════════════════════════════════════════
-   MOBILE (≤900px) — single column, Stitch-style
+   MOBILE (≤900px) — fluid single column
+   Tuned for small/short screens (e.g. Redmi 13C ~360×800)
    ═══════════════════════════════════════════════════════ */
 @media (max-width: 900px) {
   .device-wrapper {
     height: auto;
+    min-height: 100%;
     min-height: 100dvh;
+    width: 100%;
+    max-width: 100%;
     overflow: visible;
   }
 
   .device {
     height: auto;
+    min-height: 100%;
     min-height: 100dvh;
+    width: 100%;
+    max-width: 100%;
     overflow: visible;
     grid-template-rows: auto auto;
   }
@@ -1305,10 +1313,12 @@
   .device-body {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 10px;
+    gap: clamp(8px, 2.5vw, 12px);
+    padding: clamp(8px, 2.5vw, 12px);
     height: auto;
     min-height: 0;
+    width: 100%;
+    max-width: 100%;
   }
 
   .hinge { display: none; }
@@ -1316,47 +1326,63 @@
   .left-shell,
   .right-shell {
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     min-height: 0;
   }
 
   /* ─── Top bar compact ─── */
   .top-bar {
     height: auto;
-    min-height: 52px;
-    padding: 8px 12px;
-    gap: 10px;
+    min-height: 0;
+    padding: clamp(6px, 2vw, 10px) clamp(8px, 3vw, 14px);
+    gap: clamp(6px, 2vw, 10px);
   }
 
-  .top-bar-left { gap: 10px; min-width: 0; }
+  .top-bar-left {
+    gap: clamp(6px, 2vw, 10px);
+    min-width: 0;
+    flex: 1;
+  }
 
   .lens {
-    width: 34px;
-    height: 34px;
+    width: clamp(28px, 8vw, 34px);
+    height: clamp(28px, 8vw, 34px);
+    flex-shrink: 0;
   }
 
   .led-pill {
-    padding: 5px 8px;
-    gap: 6px;
+    padding: 4px clamp(6px, 2vw, 8px);
+    gap: 5px;
+    flex-shrink: 0;
   }
 
   .led {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
   }
 
-  .led-label { font-size: 7px; }
+  .led-label { font-size: 6px; }
 
-  .top-title-group { min-width: 0; }
+  .top-title-group { min-width: 0; flex: 1; }
+
+  .top-title-row {
+    gap: 6px;
+    min-width: 0;
+  }
 
   .top-title {
-    font-size: 13px;
+    font-size: clamp(11px, 3.2vw, 13px);
     letter-spacing: 0.04em;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .top-badge {
-    font-size: 8px;
-    padding: 1px 6px;
+    font-size: 7px;
+    padding: 1px 5px;
+    flex-shrink: 0;
   }
 
   .top-subtitle,
@@ -1364,13 +1390,17 @@
     display: none;
   }
 
+  .top-bar-right {
+    flex-shrink: 0;
+  }
+
   .top-registration {
-    padding: 4px 8px;
+    padding: 3px 6px;
   }
 
   .top-registration-text {
-    font-size: 9px;
-    max-width: 72px;
+    font-size: 8px;
+    max-width: 64px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1378,24 +1408,46 @@
 
   /* ─── Gray shell / screen ─── */
   .left-shell {
-    padding: 8px;
-    gap: 10px;
-    border-radius: 18px;
+    padding: clamp(6px, 2vw, 8px);
+    gap: clamp(6px, 2vw, 10px);
+    border-radius: 16px;
+  }
+
+  .gray-shell-wrapper {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .gray-shell {
-    border-radius: 16px;
+    height: auto;
+    min-height: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 14px;
     border-bottom-left-radius: 0;
-    padding: 10px;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 28px 100%, 0 calc(100% - 28px));
+    padding: clamp(8px, 2.5vw, 12px);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+    overflow: hidden;
   }
 
   .sensor-dots { margin-bottom: 6px; gap: 8px; }
-  .sensor-dot { width: 8px; height: 8px; }
+  .sensor-dot { width: 7px; height: 7px; }
 
   .screen-recess {
     border-width: 3px;
     border-radius: 12px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .screen-inner {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   /* ─── Name row ─── */
@@ -1409,25 +1461,34 @@
     flex: 1 1 auto;
     flex-wrap: wrap;
     gap: 6px;
+    min-width: 0;
   }
 
   .pokemon-name {
-    font-size: 18px;
+    font-size: clamp(15px, 4.2vw, 18px);
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .id-badge {
     font-size: 10px;
-    padding: 2px 8px;
+    padding: 2px 7px;
+    flex-shrink: 0;
+  }
+
+  .type-chips-inline {
+    flex-wrap: wrap;
+    min-width: 0;
   }
 
   .type-chip {
     font-size: 8px;
-    padding: 2px 7px;
+    padding: 2px 6px;
   }
 
   .type-icon {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
   }
 
   .name-row-right {
@@ -1436,30 +1497,34 @@
   }
 
   .icon-btn {
-    padding: 4px 8px;
+    padding: 4px 7px;
     font-size: 8px;
   }
 
   .icon-btn .material-symbols-rounded { font-size: 12px; }
 
-  /* ─── Viewer: fixed min height ─── */
+  /* ─── Viewer: fluid height, capped (fits short HD+ screens) ─── */
   .viewer-area {
-    min-height: 42vh;
     flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 0;
+    height: clamp(170px, 34dvh, 280px);
   }
 
   .viewer-glow {
-    width: 180px;
-    height: 180px;
+    width: min(180px, 55vw);
+    height: min(180px, 55vw);
   }
 
-  .ring-1 { width: 150px; height: 150px; }
-  .ring-2 { width: 200px; height: 200px; }
+  .ring-1 { width: min(150px, 48vw); height: min(150px, 48vw); }
+  .ring-2 { width: min(200px, 62vw); height: min(200px, 62vw); }
 
-  .degree-mark.top    { top: -104px; }
-  .degree-mark.right  { right: -104px; }
-  .degree-mark.bottom { bottom: -104px; }
-  .degree-mark.left   { left: -104px; }
+  .degree-mark.top    { top: calc(-1 * min(104px, 33vw)); }
+  .degree-mark.right  { right: calc(-1 * min(104px, 33vw)); }
+  .degree-mark.bottom { bottom: calc(-1 * min(104px, 33vw)); }
+  .degree-mark.left   { left: calc(-1 * min(104px, 33vw)); }
 
   /* ─── Nav strip ─── */
   .nav-strip {
@@ -1470,8 +1535,9 @@
 
   .nav-arrow {
     padding: 6px 8px;
-    font-size: 9px;
+    font-size: clamp(8px, 2.2vw, 9px);
     max-width: 42%;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1480,7 +1546,14 @@
   /* ─── Search ─── */
   .search-bar { padding: 6px 8px; }
 
+  .search-bar form {
+    width: 100%;
+    max-width: 100%;
+  }
+
   .search-input {
+    flex: 1;
+    min-width: 0;
     font-size: 16px; /* prevent iOS zoom */
     padding: 8px 10px;
   }
@@ -1493,67 +1566,73 @@
 
   /* ─── Below screen ─── */
   .below-screen { padding-top: 6px; }
-  .display-ready { padding-left: 8px; }
+  .display-ready { padding-left: 4px; min-width: 0; }
   .display-ready-text { font-size: 7px; }
-  .speaker-line { width: 22px; }
+  .speaker-line { width: 20px; }
 
   /* ─── Control panel compact ─── */
   .control-panel {
-    height: 92px;
-    padding: 8px 12px;
-    border-radius: 14px;
+    height: auto;
+    min-height: 0;
+    padding: 8px clamp(8px, 3vw, 14px);
+    border-radius: 12px;
     gap: 8px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .analog-btn {
-    width: 36px;
-    height: 36px;
+    width: clamp(28px, 8vw, 36px);
+    height: clamp(28px, 8vw, 36px);
   }
 
   .analog-btn::after {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
   }
 
   .pill {
-    width: 32px;
-    height: 12px;
+    width: clamp(26px, 7vw, 32px);
+    height: 11px;
   }
 
   .pill-group { gap: 6px; }
 
   .dpad {
-    width: 64px;
-    height: 64px;
+    width: clamp(52px, 16vw, 64px);
+    height: clamp(52px, 16vw, 64px);
   }
 
   .dpad-btn {
-    width: 20px;
-    height: 20px;
+    width: clamp(17px, 5vw, 20px);
+    height: clamp(17px, 5vw, 20px);
     font-size: 8px;
     border-width: 1px;
   }
 
   .dpad-center {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
   }
 
   .dpad-center::after {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
   }
 
   /* ─── Right shell / terminal ─── */
   .right-shell {
-    padding: 8px;
+    padding: clamp(6px, 2vw, 8px);
     gap: 8px;
-    border-radius: 18px;
+    border-radius: 16px;
   }
 
   .terminal {
-    border-radius: 14px;
+    border-radius: 12px;
     border-width: 3px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .terminal-header {
@@ -1567,13 +1646,15 @@
   /* Tabs (mobile only) — icons/labels match desktop terminal cards */
   .data-tabs {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 4px;
     padding: 6px;
     margin: 8px 8px 0;
     background: rgba(15, 23, 42, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 10px;
+    width: auto;
+    max-width: calc(100% - 16px);
   }
 
   .data-tab {
@@ -1582,22 +1663,24 @@
     align-items: center;
     justify-content: center;
     gap: 2px;
-    padding: 8px 4px;
+    padding: 8px 2px;
     border: 1px solid transparent;
     border-radius: 8px;
     background: transparent;
     color: var(--text-muted);
     font-family: var(--font-mono);
-    font-size: 8px;
+    font-size: clamp(7px, 2vw, 8px);
     font-weight: 700;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.15s;
+    min-width: 0;
+    overflow: hidden;
   }
 
   .data-tab .material-symbols-rounded {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .data-tab.active {
@@ -1612,10 +1695,16 @@
     padding: 10px;
     gap: 10px;
     max-height: none;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .tab-content [data-section] {
     display: none;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .tab-content [data-section].active-section {
@@ -1625,16 +1714,18 @@
   }
 
   .metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6px;
   }
 
   .card {
     padding: 10px;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .metric-value {
-    font-size: 16px;
+    font-size: clamp(14px, 4vw, 16px);
   }
 
   .lore-text {
@@ -1650,10 +1741,11 @@
     overflow-x: auto;
     justify-content: flex-start;
     padding-bottom: 4px;
+    max-width: 100%;
   }
 
   .evo-stage {
-    min-width: 80px;
+    min-width: 76px;
     flex-shrink: 0;
   }
 
@@ -1665,6 +1757,81 @@
   }
 
   .footer-text { font-size: 7px; }
+}
+
+/* ─── Short viewports (phones with browser chrome / HD+ 720p) ─── */
+@media (max-width: 900px) and (max-height: 740px) {
+  .viewer-area {
+    height: clamp(150px, 30dvh, 230px);
+  }
+
+  .control-panel {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .dpad {
+    width: clamp(48px, 14vw, 56px);
+    height: clamp(48px, 14vw, 56px);
+  }
+
+  .analog-btn,
+  .pill-group {
+    opacity: 0.95;
+  }
+
+  .gray-shell {
+    padding: 8px;
+  }
+
+  .name-row {
+    padding: 6px 8px;
+  }
+
+  .search-bar,
+  .nav-strip {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+}
+
+@media (max-width: 900px) and (max-height: 640px) {
+  .viewer-area {
+    height: clamp(140px, 28dvh, 200px);
+  }
+
+  .analog-btn { display: none; }
+  .pill-group { display: none; }
+
+  .control-panel {
+    justify-content: center;
+  }
+
+  .lens { width: 26px; height: 26px; }
+  .led-pill { display: none; }
+}
+
+/* ─── Narrow phones (≤360px, e.g. 720p CSS width) ─── */
+@media (max-width: 360px) {
+  .device-body {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .top-title { font-size: 11px; }
+  .top-badge { display: none; }
+  .top-registration-text { max-width: 52px; }
+
+  .viewer-area {
+    height: clamp(150px, 32dvh, 220px);
+  }
+
+  .pokemon-name { font-size: 15px; }
+
+  .nav-arrow { max-width: 46%; }
+
+  .data-tab { font-size: 7px; }
+  .data-tab .material-symbols-rounded { font-size: 14px; }
 }
 
 /* Desktop: hide tab bar, always show all sections */
