@@ -69,7 +69,3 @@ src/
     ├── type-icons/      # Ícones SVG dos tipos dos Pokémon
     └── ...
 ```
-
----
-
-*Feito com carinho para fãs de Pokémon que sempre quiseram segurar uma Pokédex de verdade.*
